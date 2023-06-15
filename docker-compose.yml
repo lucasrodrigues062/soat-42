@@ -15,7 +15,16 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-  
+  app:
+    image: lucasrodrigues062/soat42
+    container_name: soat42
+    ports:
+      - "3000:3000"
+    restart: unless-stopped 
+    networks:
+      - postgres
+    depends_on:
+      - postgres   
 
 networks:
   postgres:
