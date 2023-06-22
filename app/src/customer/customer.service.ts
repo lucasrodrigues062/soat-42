@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { Customer, Prisma } from '@prisma/client';
@@ -13,7 +17,6 @@ export class CustomerService {
       const customer = await this.db.customer.create({
         data: request,
       });
-      console.log('criou');
       return {
         nome: customer.name,
         cpf: customer.cpf,
@@ -28,5 +31,24 @@ export class CustomerService {
         }
       }
     }
+  }
+
+  async findByCPF(cpf: string) {
+    const customer = await this.db.customer.findUnique({
+      where: {
+        cpf: cpf,
+      },
+    });
+
+    if (customer) {
+      return {
+        nome: customer.name,
+        cpf: customer.cpf,
+        telefone: customer.phone,
+        email: customer.email,
+      } as CreateCustomerDTO;
+    }
+
+    throw new NotFoundException('Nao existe cliente com esse registro');
   }
 }
