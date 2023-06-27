@@ -6,7 +6,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { Customer, Prisma } from '@prisma/client';
-import CreateCustomerDTO from './requests/create-user';
+import CreateCustomerDTO from './dto/create-user';
 
 @Injectable()
 export class CustomerService {
@@ -24,7 +24,6 @@ export class CustomerService {
         email: customer.email,
       } as CreateCustomerDTO;
     } catch (error) {
-      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new BadRequestException('Cliente ja cadastrado');
