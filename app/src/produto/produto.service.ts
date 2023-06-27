@@ -27,8 +27,8 @@ export class ProdutoService {
     }
   }
 
-  findAll() {
-    return `This action returns all produto`;
+  async findAll() {
+    return this.db.product.findMany();
   }
 
   findOne(id: number) {
