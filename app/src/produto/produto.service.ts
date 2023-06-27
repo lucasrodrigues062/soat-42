@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
+import { Categoria } from './dto/categoria-enum';
 
 @Injectable()
 export class ProdutoService {
@@ -43,6 +44,15 @@ export class ProdutoService {
       throw new NotFoundException();
     }
     return new CreateProdutoDto().fromProduct(product);
+  }
+
+  async findAllByCategory(categoria: Categoria) {
+    console.log(categoria.toString());
+    const products = await this.db.product.findMany({
+      where: { category: categoria.toString() },
+    });
+
+    return products.map((el) => new CreateProdutoDto().fromProduct(el));
   }
 
   update(id: number, updateProdutoDto: UpdateProdutoDto) {

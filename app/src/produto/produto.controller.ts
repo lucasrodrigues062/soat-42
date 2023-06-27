@@ -1,16 +1,18 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
   HttpCode,
+  Param,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
-import { ProdutoService } from './produto.service';
+import { Categoria } from './dto/categoria-enum';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
+import { ProdutoService } from './produto.service';
 
 @Controller('produto')
 export class ProdutoController {
@@ -23,7 +25,10 @@ export class ProdutoController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('categoria') categoria: Categoria) {
+    if (categoria !== null || categoria !== undefined) {
+      return this.produtoService.findAllByCategory(categoria);
+    }
     return this.produtoService.findAll();
   }
 
