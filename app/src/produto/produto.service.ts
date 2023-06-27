@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
@@ -28,11 +32,17 @@ export class ProdutoService {
   }
 
   async findAll() {
-    return this.db.product.findMany();
+    const products = await this.db.product.findMany();
+    return products.map((el) => new CreateProdutoDto().fromProduct(el));
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} produto`;
+  async findOne(code: number) {
+    const product = await this.db.product.findFirst({ where: { id: code } });
+    console.log(product);
+    if (product === null || product === undefined) {
+      throw new NotFoundException();
+    }
+    return new CreateProdutoDto().fromProduct(product);
   }
 
   update(id: number, updateProdutoDto: UpdateProdutoDto) {
