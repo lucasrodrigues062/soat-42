@@ -47,7 +47,6 @@ export class ProdutoService {
   }
 
   async findAllByCategory(categoria: Categoria) {
-    console.log(categoria.toString());
     const products = await this.db.product.findMany({
       where: { category: categoria.toString() },
     });
@@ -55,11 +54,28 @@ export class ProdutoService {
     return products.map((el) => new CreateProdutoDto().fromProduct(el));
   }
 
-  update(id: number, updateProdutoDto: UpdateProdutoDto) {
-    return `This action updates a #${id} produto`;
+  async update(code: number, updateProdutoDto: UpdateProdutoDto) {
+    const oldProduct = await this.findOne(code);
+    const updatedProduct = await this.db.product.update({
+      where: { id: code },
+      data: {
+        price: updateProdutoDto.preco
+          ? updateProdutoDto.preco
+          : oldProduct.preco,
+        name: updateProdutoDto.nome ? updateProdutoDto.nome : oldProduct.nome,
+        description: updateProdutoDto.descricao
+          ? updateProdutoDto.descricao
+          : oldProduct.descricao,
+        category: updateProdutoDto.categoria
+          ? updateProdutoDto.categoria
+          : oldProduct.categoria,
+      },
+    });
+    return new CreateProdutoDto().fromProduct(updatedProduct);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} produto`;
+  async remove(code: number) {
+    await this.db.product.delete({ where: { id: code } });
+    return;
   }
 }
