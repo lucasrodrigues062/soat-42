@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Get, HttpCode, Param, Post, Query } from '@nestjs/common';
 import { CustomerService } from './customer.service';
-import CreateCustomerDTO, { toCustomer } from './requests/create-user';
+import CreateCustomerDTO, { toCustomer } from './dto/create-user';
 import { cp } from 'fs';
 
 

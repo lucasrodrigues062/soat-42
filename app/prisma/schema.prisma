@@ -10,13 +10,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Customer {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String
-  phone   String
-  cpf     String  @unique
+  id     Int     @id @default(autoincrement())
+  email  String  @unique
+  name   String
+  phone  String
+  cpf    String  @unique
+  orders Order[]
+}
 
+model Product {
+  id          Int    @id @default(autoincrement())
+  name        String
+  category    String
+  price       Float
+  description String
+  orders Order[]
+}
 
+model Order {
+  id         Int       @id @default(autoincrement())
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId Int?
+  items      Product[]
+  status String
+  createdAt  DateTime @default(now())
+  deliveredAt DateTime?
 }
