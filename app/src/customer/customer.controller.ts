@@ -5,7 +5,7 @@ import CreateCustomerDTO, { toCustomer } from './dto/create-user';
 import { cp } from 'fs';
 
 
-@Controller('customer')
+@Controller('cliente')
 export class CustomerController {
   constructor(private readonly service: CustomerService) { }
 
