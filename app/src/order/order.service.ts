@@ -1,5 +1,11 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { OrderItem, Prisma } from '@prisma/client';
+import { DenormalizedDoc } from './../../node_modules/@nestjs/swagger/dist/interfaces/denormalized-doc.interface.d';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { OrderItem, Prisma, Product } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrderDto, StatusPedido } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -103,11 +109,39 @@ export class OrderService {
     };
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async update(id: number, updateOrderDto: UpdateOrderDto) {
+    for await (const item of updateOrderDto.items) {
+      const existItem = await this.db.orderItem.findFirst({
+        where: { orderId: id, productId: item.id },
+      });
+
+      if (existItem != null) {
+        if (item.quantidade <= 0) {
+          await this.db.orderItem.delete({ where: { id: existItem.id } });
+        } else {
+          await this.db.orderItem.update({
+            where: { id: existItem.id },
+            data: {
+              quantity: item.quantidade,
+            },
+          });
+        }
+      } else {
+        await this.db.orderItem.create({
+          data: {
+            orderId: id,
+            productId: item.id,
+            quantity: item.quantidade,
+          },
+        });
+      }
+    }
+
+    return await this.findOne(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  async remove(id: number) {
+    await this.db.orderItem.deleteMany({ where: { orderId: id } });
+    await this.db.order.delete({ where: { id: id } });
   }
 }
