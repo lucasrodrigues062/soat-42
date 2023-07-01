@@ -1,1 +1,1 @@
-export class Order {}
+export class Order { }

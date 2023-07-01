@@ -1,11 +1,5 @@
-import { IsEnum, IsNumber } from 'class-validator';
-
-export class ItemDto {
-  @IsNumber()
-  id: number;
-  @IsNumber()
-  quantidade: number;
-}
+import { IsNotEmpty, IsNumber } from 'class-validator';
+import { ItemDto } from './create-item-order-dto';
 
 export enum StatusPedido {
   PENDENTE = 'PENDENTE',
@@ -16,7 +10,6 @@ export enum StatusPedido {
 export class CreateOrderDto {
   @IsNumber()
   cliente_id: number;
-  @IsEnum(StatusPedido)
-  status: StatusPedido;
+  @IsNotEmpty()
   items: ItemDto[];
 }
