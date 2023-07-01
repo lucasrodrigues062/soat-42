@@ -50,8 +50,8 @@ model OrderItem {
 
 model Queue {
   id          Int       @id @default(autoincrement())
-  order       Order     @relation(fields: [orderId], references: [id])
-  orderId     Int
+  order       Order?     @relation(fields: [orderId], references: [id])
+  orderId     Int?
   createdAt   DateTime  @default(now())
   deliveredAt DateTime?
   status      String
