@@ -5,6 +5,7 @@ import { CustomerModule } from './customer/customer.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProdutoModule } from './produto/produto.module';
 import { OrderModule } from './order/order.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { OrderModule } from './order/order.module';
     ConfigModule.forRoot({ isGlobal: true }),
     ProdutoModule,
     OrderModule,
+    QueueModule,
   ],
 
   providers: [],

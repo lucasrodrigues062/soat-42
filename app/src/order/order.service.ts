@@ -9,11 +9,16 @@ import { OrderItem, Prisma, Product } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrderDto, StatusPedido } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { QueueService } from 'src/queue/queue.service';
 
 @Injectable()
 export class OrderService {
   private readonly logger = new Logger(OrderService.name);
-  constructor(private readonly db: PrismaService) { }
+
+  constructor(
+    private readonly db: PrismaService,
+    private readonly queue: QueueService,
+  ) { }
 
   async create(createOrderDto: CreateOrderDto) {
     try {
@@ -43,6 +48,11 @@ export class OrderService {
         include: {
           items: true,
         },
+      });
+
+      this.queue.create({
+        order_id: finished.id,
+        status: finished.status,
       });
 
       return {
