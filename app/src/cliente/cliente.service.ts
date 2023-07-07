@@ -6,23 +6,23 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { Customer, Prisma } from '@prisma/client';
-import CreateCustomerDTO from './dto/create-user';
+import CreateClienteDTO from './dto/create-cliente';
 
 @Injectable()
-export class CustomerService {
+export class ClienteService {
   constructor(private readonly db: PrismaService) { }
 
   async create(request: Customer) {
     try {
-      const customer = await this.db.customer.create({
+      const cliente = await this.db.customer.create({
         data: request,
       });
       return {
-        nome: customer.name,
-        cpf: customer.cpf,
-        telefone: customer.phone,
-        email: customer.email,
-      } as CreateCustomerDTO;
+        nome: cliente.name,
+        cpf: cliente.cpf,
+        telefone: cliente.phone,
+        email: cliente.email,
+      } as CreateClienteDTO;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -33,19 +33,19 @@ export class CustomerService {
   }
 
   async findByCPF(cpf: string) {
-    const customer = await this.db.customer.findUnique({
+    const cliente = await this.db.customer.findUnique({
       where: {
         cpf: cpf,
       },
     });
 
-    if (customer) {
+    if (cliente) {
       return {
-        nome: customer.name,
-        cpf: customer.cpf,
-        telefone: customer.phone,
-        email: customer.email,
-      } as CreateCustomerDTO;
+        nome: cliente.name,
+        cpf: cliente.cpf,
+        telefone: cliente.phone,
+        email: cliente.email,
+      } as CreateClienteDTO;
     }
 
     throw new NotFoundException('Nao existe cliente com esse registro');

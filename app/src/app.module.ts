@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { CustomerModule } from './customer/customer.module';
+import { ClienteModule } from './cliente/cliente.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProdutoModule } from './produto/produto.module';
-import { OrderModule } from './order/order.module';
+import { PedidoModule } from './pedido/pedido.module';
 
 @Module({
   imports: [
-    CustomerModule,
+    ClienteModule,
     PrismaModule,
     ConfigModule.forRoot({ isGlobal: true }),
     ProdutoModule,
-    OrderModule,
+    PedidoModule,
   ],
 
   providers: [],

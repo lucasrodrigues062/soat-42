@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
-import { ItemDto } from './create-item-order-dto';
+import { ItemDto } from './create-item-pedido-dto';
 
 export enum StatusPedido {
   PENDENTE = 'PENDENTE',
@@ -7,7 +7,7 @@ export enum StatusPedido {
   CANCELADO = 'CANCELADO',
 }
 
-export class CreateOrderDto {
+export class CreatePedidoDto {
   @IsNumber()
   cliente_id: number;
   @IsNotEmpty()
