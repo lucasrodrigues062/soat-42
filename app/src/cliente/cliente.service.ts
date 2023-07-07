@@ -1,22 +1,21 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 import { Customer, Prisma } from '@prisma/client';
 import CreateClienteDTO from './dto/create-cliente';
+import { IClienteRepository } from './repository/cliente.interface';
 
 @Injectable()
 export class ClienteService {
-  constructor(private readonly db: PrismaService) { }
+  constructor(@Inject('IClienteRepository') private readonly clienteRepository: IClienteRepository) { }
 
   async create(request: Customer) {
     try {
-      const cliente = await this.db.customer.create({
-        data: request,
-      });
+      const cliente = await this.clienteRepository.criaCliente(request)
       return {
         nome: cliente.name,
         cpf: cliente.cpf,
@@ -33,11 +32,7 @@ export class ClienteService {
   }
 
   async findByCPF(cpf: string) {
-    const cliente = await this.db.customer.findUnique({
-      where: {
-        cpf: cpf,
-      },
-    });
+    const cliente = await this.clienteRepository.buscaPorCPF(cpf)
 
     if (cliente) {
       return {

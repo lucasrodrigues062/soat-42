@@ -1,49 +1,33 @@
-import { DenormalizedDoc } from '@nestjs/swagger/dist/interfaces/denormalized-doc.interface';
 import {
   BadRequestException,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { OrderItem, Prisma, Product } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { OrderItem, Prisma } from '@prisma/client';
 import { CreatePedidoDto, StatusPedido } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
+import { IPedidoRepository } from './repository/pedido.interface';
+import { IPedidoItemRepository } from './repository/pedidoItem.interface';
 
 @Injectable()
 export class PedidoService {
   private readonly logger = new Logger(PedidoService.name);
-  constructor(private readonly db: PrismaService) { }
+  constructor(@Inject('IPedidoRepository') private readonly pedidoRepository: IPedidoRepository,
+    @Inject('IPedidoItemRepository') private readonly pedidoItemRepository: IPedidoItemRepository) { }
 
-  async create(CreatePedidoDto: CreatePedidoDto) {
+  async create(createPedidoDto: CreatePedidoDto) {
     try {
-      const pedido = await this.db.order.create({
-        data: {
-          customerId: CreatePedidoDto.cliente_id,
-          status: StatusPedido.PENDENTE.toString(),
-        },
-      });
-      const items = CreatePedidoDto.items.map((item) => {
+      const pedido = await this.pedidoRepository.criaPedido(createPedidoDto, StatusPedido.PENDENTE)
+      const items = createPedidoDto.items.map((item) => {
         return {
           productId: item.id,
           quantity: item.quantidade,
         } as OrderItem;
       });
-      const finished = await this.db.order.update({
-        where: {
-          id: pedido.id,
-        },
-        data: {
-          items: {
-            createMany: {
-              data: items,
-            },
-          },
-        },
-        include: {
-          items: true,
-        },
-      });
+
+      const finished = await this.pedidoRepository.atualizaPedido(pedido.id, items)
 
       return {
         client_id: finished.customerId,
@@ -67,7 +51,7 @@ export class PedidoService {
   }
 
   async findAll() {
-    const pedidos = await this.db.order.findMany({ include: { items: true } });
+    const pedidos = await this.pedidoRepository.buscaPedidos()
 
     return pedidos.map((el) => {
       return {
@@ -85,11 +69,8 @@ export class PedidoService {
     });
   }
 
-  async findOne(orderId: number) {
-    const pedido = await this.db.order.findFirst({
-      where: { id: orderId },
-      include: { items: true },
-    });
+  async findOne(pedidoId: number) {
+    const pedido = await this.pedidoRepository.buscaPedido(pedidoId)
 
     if (pedido === null || pedido === undefined) {
       throw new NotFoundException();
@@ -109,39 +90,25 @@ export class PedidoService {
     };
   }
 
-  async update(id: number, updatePedidoDto: UpdatePedidoDto) {
+  async update(pedidoId: number, updatePedidoDto: UpdatePedidoDto) {
     for await (const item of updatePedidoDto.items) {
-      const existItem = await this.db.orderItem.findFirst({
-        where: { orderId: id, productId: item.id },
-      });
+      const existItem = await this.pedidoItemRepository.buscaItemPedido(pedidoId, item.id)
 
       if (existItem != null) {
         if (item.quantidade <= 0) {
-          await this.db.orderItem.delete({ where: { id: existItem.id } });
+          await this.pedidoItemRepository.removeItemPedido(pedidoId)
         } else {
-          await this.db.orderItem.update({
-            where: { id: existItem.id },
-            data: {
-              quantity: item.quantidade,
-            },
-          });
+          await this.pedidoItemRepository.atualizaItemPedido(pedidoId, item.quantidade)
         }
       } else {
-        await this.db.orderItem.create({
-          data: {
-            orderId: id,
-            productId: item.id,
-            quantity: item.quantidade,
-          },
-        });
+        await this.pedidoItemRepository.criaItemPedido(pedidoId, item.id, item.quantidade)
       }
     }
 
-    return await this.findOne(id);
+    return await this.findOne(pedidoId);
   }
 
-  async remove(id: number) {
-    await this.db.orderItem.deleteMany({ where: { orderId: id } });
-    await this.db.order.delete({ where: { id: id } });
+  remove(pedidoId: number) {
+    return this.pedidoRepository.removePedido(pedidoId)
   }
 }

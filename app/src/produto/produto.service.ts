@@ -1,27 +1,22 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProdutoDto } from './dto/create-produto.dto';
 import { UpdateProdutoDto } from './dto/update-produto.dto';
 import { Categoria } from './dto/categoria-enum';
+import { IProdutoRepository } from './repository/produto.interface';
 
 @Injectable()
 export class ProdutoService {
-  constructor(private readonly db: PrismaService) { }
+  constructor(@Inject('IProdutoRepository') private readonly produtoRepository: IProdutoRepository) { }
+
   async create(createProdutoDto: CreateProdutoDto) {
     try {
-      const product = await this.db.product.create({
-        data: {
-          name: createProdutoDto.nome,
-          category: createProdutoDto.categoria,
-          price: createProdutoDto.preco,
-          description: createProdutoDto.descricao,
-        },
-      });
+      const product = await this.produtoRepository.criaProduto(createProdutoDto);
       return new CreateProdutoDto().fromProduct(product);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -33,12 +28,12 @@ export class ProdutoService {
   }
 
   async findAll() {
-    const products = await this.db.product.findMany();
+    const products = await this.produtoRepository.buscaProdutos();
     return products.map((el) => new CreateProdutoDto().fromProduct(el));
   }
 
   async findOne(code: number) {
-    const product = await this.db.product.findFirst({ where: { id: code } });
+    const product = await this.produtoRepository.buscaProduto(code);
     console.log(product);
     if (product === null || product === undefined) {
       throw new NotFoundException();
@@ -47,35 +42,18 @@ export class ProdutoService {
   }
 
   async findAllByCategory(categoria: Categoria) {
-    const products = await this.db.product.findMany({
-      where: { category: categoria.toString() },
-    });
+    const products = await this.produtoRepository.buscaProdutosPorCategoria(categoria)
 
     return products.map((el) => new CreateProdutoDto().fromProduct(el));
   }
 
   async update(code: number, updateProdutoDto: UpdateProdutoDto) {
-    const oldProduct = await this.findOne(code);
-    const updatedProduct = await this.db.product.update({
-      where: { id: code },
-      data: {
-        price: updateProdutoDto.preco
-          ? updateProdutoDto.preco
-          : oldProduct.preco,
-        name: updateProdutoDto.nome ? updateProdutoDto.nome : oldProduct.nome,
-        description: updateProdutoDto.descricao
-          ? updateProdutoDto.descricao
-          : oldProduct.descricao,
-        category: updateProdutoDto.categoria
-          ? updateProdutoDto.categoria
-          : oldProduct.categoria,
-      },
-    });
+    const updatedProduct = await this.produtoRepository.atualizaProduto(code, updateProdutoDto)
     return new CreateProdutoDto().fromProduct(updatedProduct);
   }
 
   async remove(code: number) {
-    await this.db.product.delete({ where: { id: code } });
+    await this.produtoRepository.removeProduto(code)
     return;
   }
 }
