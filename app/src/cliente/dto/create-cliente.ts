@@ -2,7 +2,7 @@
 import { Customer } from '@prisma/client';
 import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 
-class CreateCustomerDTO {
+class CreateClienteDTO {
   @IsNotEmpty()
   nome: string;
   @Matches('([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})')
@@ -15,9 +15,9 @@ class CreateCustomerDTO {
 
 }
 
-export default CreateCustomerDTO;
+export default CreateClienteDTO;
 
-export const toCustomer = (object: CreateCustomerDTO) => {
+export const toCliente = (object: CreateClienteDTO) => {
   return {
     name: object.nome,
     cpf: object.cpf.replace('.', '').replace('-', ''),

@@ -1,4 +1,4 @@
-import { DenormalizedDoc } from './../../node_modules/@nestjs/swagger/dist/interfaces/denormalized-doc.interface.d';
+import { DenormalizedDoc } from '@nestjs/swagger/dist/interfaces/denormalized-doc.interface';
 import {
   BadRequestException,
   Injectable,
@@ -7,28 +7,23 @@ import {
 } from '@nestjs/common';
 import { OrderItem, Prisma, Product } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateOrderDto, StatusPedido } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
-import { QueueService } from 'src/queue/queue.service';
+import { CreatePedidoDto, StatusPedido } from './dto/create-pedido.dto';
+import { UpdatePedidoDto } from './dto/update-pedido.dto';
 
 @Injectable()
-export class OrderService {
-  private readonly logger = new Logger(OrderService.name);
+export class PedidoService {
+  private readonly logger = new Logger(PedidoService.name);
+  constructor(private readonly db: PrismaService) { }
 
-  constructor(
-    private readonly db: PrismaService,
-    private readonly queue: QueueService,
-  ) { }
-
-  async create(createOrderDto: CreateOrderDto) {
+  async create(CreatePedidoDto: CreatePedidoDto) {
     try {
-      const order = await this.db.order.create({
+      const pedido = await this.db.order.create({
         data: {
-          customerId: createOrderDto.cliente_id,
+          customerId: CreatePedidoDto.cliente_id,
           status: StatusPedido.PENDENTE.toString(),
         },
       });
-      const items = createOrderDto.items.map((item) => {
+      const items = CreatePedidoDto.items.map((item) => {
         return {
           productId: item.id,
           quantity: item.quantidade,
@@ -36,7 +31,7 @@ export class OrderService {
       });
       const finished = await this.db.order.update({
         where: {
-          id: order.id,
+          id: pedido.id,
         },
         data: {
           items: {
@@ -48,11 +43,6 @@ export class OrderService {
         include: {
           items: true,
         },
-      });
-
-      this.queue.create({
-        order_id: finished.id,
-        status: finished.status,
       });
 
       return {
@@ -119,8 +109,8 @@ export class OrderService {
     };
   }
 
-  async update(id: number, updateOrderDto: UpdateOrderDto) {
-    for await (const item of updateOrderDto.items) {
+  async update(id: number, updatePedidoDto: UpdatePedidoDto) {
+    for await (const item of updatePedidoDto.items) {
       const existItem = await this.db.orderItem.findFirst({
         where: { orderId: id, productId: item.id },
       });
