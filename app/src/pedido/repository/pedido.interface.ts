@@ -1,4 +1,4 @@
-import { OrderItem, Prisma } from "@prisma/client"
+import { Order, OrderItem, Prisma } from "@prisma/client"
 import { CreatePedidoDto, StatusPedido } from "../dto/create-pedido.dto"
 
 type OrderWithItem = Prisma.OrderGetPayload<{
@@ -8,7 +8,7 @@ type OrderWithItem = Prisma.OrderGetPayload<{
 }>
 
 export interface IPedidoRepository {
-    criaPedido(createPedidoDto: CreatePedidoDto, statusPedido: StatusPedido): Promise<OrderWithItem>
+    criaPedido(createPedidoDto: CreatePedidoDto, statusPedido: StatusPedido): Promise<Order>
     buscaPedidos(): Promise<OrderWithItem[]>
     buscaPedido(pedidoId: number): Promise<OrderWithItem>
     atualizaPedido(pedidoId: number, items: OrderItem[]): Promise<OrderWithItem>

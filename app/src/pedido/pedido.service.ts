@@ -10,12 +10,16 @@ import { CreatePedidoDto, StatusPedido } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { IPedidoRepository } from './repository/pedido.interface';
 import { IPedidoItemRepository } from './repository/pedidoItem.interface';
+import { FilaService } from 'src/fila/fila.service';
+import { StatusPedidoFila } from 'src/fila/dto/create-fila.dto';
 
 @Injectable()
 export class PedidoService {
   private readonly logger = new Logger(PedidoService.name);
   constructor(@Inject('IPedidoRepository') private readonly pedidoRepository: IPedidoRepository,
-    @Inject('IPedidoItemRepository') private readonly pedidoItemRepository: IPedidoItemRepository) { }
+    @Inject('IPedidoItemRepository') private readonly pedidoItemRepository: IPedidoItemRepository,
+    private readonly filaService: FilaService
+    ) { }
 
   async create(createPedidoDto: CreatePedidoDto) {
     try {
@@ -28,6 +32,11 @@ export class PedidoService {
       });
 
       const finished = await this.pedidoRepository.atualizaPedido(pedido.id, items)
+
+      await this.filaService.create({
+        order_id: pedido.id,
+        status: StatusPedidoFila.RECEBIDO
+      })
 
       return {
         client_id: finished.customerId,

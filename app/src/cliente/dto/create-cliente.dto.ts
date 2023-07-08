@@ -1,15 +1,25 @@
 /* eslint-disable prettier/prettier */
 import { Customer } from '@prisma/client';
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 class CreateClienteDTO {
+  @IsString()
   @IsNotEmpty()
+  @ApiProperty()
   nome: string;
-  @Matches('([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})')
+
+  @IsString()
+  @ApiProperty()
   cpf: string;
-  @Matches('(^[0-9]{2})?(s|-)?(9?[0-9]{4})-?([0-9]{4}$)')
+  
+  @IsString()
+  @ApiProperty()
   telefone: string;
+  
   @IsEmail()
+  @IsString()
+  @ApiProperty()
   email: string;
 
 
@@ -20,7 +30,7 @@ export default CreateClienteDTO;
 export const toCliente = (object: CreateClienteDTO) => {
   return {
     name: object.nome,
-    cpf: object.cpf.replace('.', '').replace('-', ''),
+    cpf: object.cpf,
     phone: object.telefone,
     email: object.email,
   } as Customer;

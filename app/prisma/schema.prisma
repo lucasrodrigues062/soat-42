@@ -17,6 +17,8 @@ model Customer {
   phone  String
   cpf    String  @unique
   orders Order[]
+
+  @@map("customer")
 }
 
 model Product {
@@ -26,6 +28,8 @@ model Product {
   price         Float
   description   String
   orderProducts OrderItem[]
+
+  @@map("product")
 }
 
 model Order {
@@ -37,6 +41,8 @@ model Order {
   createdAt   DateTime    @default(now())
   deliveredAt DateTime?
   Queue       Queue[]
+
+  @@map("order")
 }
 
 model OrderItem {
@@ -46,6 +52,8 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   productId Int
   quantity  Int
+
+  @@map("orderItem")
 }
 
 model Queue {
@@ -55,4 +63,6 @@ model Queue {
   createdAt   DateTime  @default(now())
   deliveredAt DateTime?
   status      String
+
+  @@map("queue")
 }
