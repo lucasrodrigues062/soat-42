@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
 import { UpdateFilaDto } from './dto/update-fila.dto';
 import { FilaService } from './fila.service';
 
-@Controller('fila')
+@Controller('filas')
 export class FilaController {
   constructor(private readonly filaService: FilaService) { }
 

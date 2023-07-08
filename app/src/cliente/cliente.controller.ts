@@ -4,7 +4,7 @@ import { ClienteService } from './cliente.service';
 import CreateClienteDTO, { toCliente } from './dto/create-cliente';
 
 
-@Controller('cliente')
+@Controller('clientes')
 export class ClienteController {
   constructor(private readonly service: ClienteService) { }
 
