@@ -1,22 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQueueDto } from './dto/create-queue.dto';
 import { UpdateQueueDto } from './dto/update-queue.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { IQueueRepository } from './repository/queue.interface';
 
 @Injectable()
 export class QueueService {
-  constructor(private readonly db: PrismaService) { }
-  async create(createQueueDto: CreateQueueDto) {
-    return await this.db.queue.create({
-      data: {
-        status: createQueueDto.status,
-        orderId: createQueueDto.order_id,
-      },
-    });
+  constructor(@Inject('IQueueRepository') private readonly queueRepository: IQueueRepository) { }
+
+  create(createQueueDto: CreateQueueDto) {
+    return this.queueRepository.criaFila(createQueueDto)
   }
 
   async findAll() {
-    return (await this.db.queue.findMany({ include: { order: true } })).map(
+    return (await this.queueRepository.buscaFilas()).map(
       (el) => {
         return {
           cliente_id: el.order.customerId,
@@ -29,13 +25,8 @@ export class QueueService {
     );
   }
 
-  async findOne(id: number) {
-    const queue = await this.db.queue.findFirst({
-      where: {
-        id: id,
-      },
-      include: { order: true },
-    });
+  async findOne(filaId: number) {
+    const queue = await this.queueRepository.buscaFila(filaId)
     if (queue == null) {
       throw new NotFoundException();
     }
@@ -48,20 +39,9 @@ export class QueueService {
     };
   }
 
-  async update(id: number, updateQueueDto: UpdateQueueDto) {
+  async update(filaId: number, updateQueueDto: UpdateQueueDto) {
     try {
-      const queue = await this.db.queue.update({
-        data: {
-          status: updateQueueDto.status,
-          deliveredAt: updateQueueDto.status === 'ENTREGUE' ? new Date() : null,
-        },
-        where: {
-          id: id,
-        },
-        include: {
-          order: true,
-        },
-      });
+      const queue = await this.queueRepository.atualizaFila(filaId, updateQueueDto)
 
       return {
         numero_pedido: queue.orderId,
@@ -72,7 +52,7 @@ export class QueueService {
     }
   }
 
-  async remove(id: number) {
-    return await this.db.queue.delete({ where: { id: id } });
+  async remove(filaId: number) {
+    return await this.queueRepository.removeFila(filaId)
   }
 }
