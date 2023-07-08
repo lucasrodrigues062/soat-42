@@ -18,7 +18,7 @@ export class FilaRepository implements IFilaRepository {
     buscaFila(queueId) {
         return this.db.queue.findFirst({
             where: {
-                id: queueId,
+                orderId: queueId,
             },
             include: { order: true },
         });

@@ -25,8 +25,8 @@ export class FilaService {
     );
   }
 
-  async findOne(filaId: number) {
-    const queue = await this.filaRepository.buscaFila(filaId)
+  async findOne(pedidoId: number) {
+    const queue = await this.filaRepository.buscaFila(pedidoId)
     if (queue == null) {
       throw new NotFoundException();
     }

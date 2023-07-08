@@ -11,18 +11,18 @@ export class FilaController {
     return this.filaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(':pedidoId')
+  findOne(@Param('pedidoId') id: string) {
     return this.filaService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFilaDto: UpdateFilaDto) {
-    return this.filaService.update(+id, updateFilaDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateFilaDto: UpdateFilaDto) {
+  //   return this.filaService.update(+id, updateFilaDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.filaService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.filaService.remove(+id);
+  // }
 }
