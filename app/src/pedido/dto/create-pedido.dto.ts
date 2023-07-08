@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 import { ItemDto } from './create-item-pedido-dto';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum StatusPedido {
   PENDENTE = 'PENDENTE',
@@ -9,7 +10,9 @@ export enum StatusPedido {
 
 export class CreatePedidoDto {
   @IsNumber()
+  @ApiProperty()
   cliente_id: number;
   @IsNotEmpty()
+  @ApiProperty()
   items: ItemDto[];
 }
