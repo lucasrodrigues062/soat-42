@@ -1,5 +1,5 @@
 export enum Categoria {
-  LANCHE,
-  ACOMPANHAMENTO,
-  BEBIDA,
+  LANCHE = "lanche",
+  BEBIDA = "bebida",
+  SOBREMESA = "sobremesa",
 }
