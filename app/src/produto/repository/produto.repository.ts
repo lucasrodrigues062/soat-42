@@ -1,10 +1,11 @@
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "src/prisma.service";
 import { IProdutoRepository } from "./produto.interface";
 import { Categoria } from "../dto/categoria-enum";
+import { Inject } from "@nestjs/common";
 
 export class ProdutoRepository implements IProdutoRepository {
 
-    constructor(private readonly db: PrismaService) { }
+    constructor(@Inject(PrismaService) private readonly db: PrismaService) { }
 
     criaProduto(createProdutoDto) {
         return this.db.product.create({
@@ -27,7 +28,7 @@ export class ProdutoRepository implements IProdutoRepository {
 
     buscaProdutosPorCategoria(categoria: Categoria) {
         return this.db.product.findMany({
-            where: { category: categoria.toString() },
+            where: { category: categoria },
         });
     }
 

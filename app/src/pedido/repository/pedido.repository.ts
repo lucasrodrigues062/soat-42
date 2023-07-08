@@ -1,8 +1,9 @@
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "src/prisma.service";
 import { IPedidoRepository } from "./pedido.interface";
+import { Inject } from "@nestjs/common";
 
 export class PedidoRepository implements IPedidoRepository {
-    constructor(private readonly db: PrismaService) { }
+    constructor(@Inject(PrismaService) private readonly db: PrismaService) { }
 
     criaPedido(createPedidoDto, statusPedido) {
         return this.db.order.create({

@@ -1,10 +1,11 @@
 import { Customer } from "@prisma/client";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "src/prisma.service";
 import { IClienteRepository } from "./cliente.interface";
+import { Inject } from "@nestjs/common";
 
 export class ClienteRepository implements IClienteRepository {
 
-    constructor(private readonly db: PrismaService) { }
+    constructor(@Inject(PrismaService) private readonly db: PrismaService) { }
 
     criaCliente(customer: Customer) {
         return this.db.customer.create({ data: customer })
