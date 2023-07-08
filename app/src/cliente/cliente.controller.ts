@@ -11,13 +11,12 @@ export class ClienteController {
   @Post()
   @HttpCode(201)
   register(@Body() request: CreateClienteDTO) {
-    return this.service.create(toCliente(request));
+    return this.service.criaCliente(toCliente(request));
   }
 
   @Get()
   search(@Query('cpf') request: string) {
-    const cpf = request.replace('.', '').replace('-', '')
-    return this.service.findByCPF(cpf)
+    return this.service.buscaPorCPF(request)
   }
 }
 

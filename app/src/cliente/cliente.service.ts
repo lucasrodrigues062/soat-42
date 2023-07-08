@@ -13,7 +13,7 @@ import { IClienteRepository } from './repository/cliente.interface';
 export class ClienteService {
   constructor(@Inject('IClienteRepository') private readonly clienteRepository: IClienteRepository) { }
 
-  async create(request: Customer) {
+  async criaCliente(request: Customer) {
     try {
       const cliente = await this.clienteRepository.criaCliente(request)
       return {
@@ -31,7 +31,7 @@ export class ClienteService {
     }
   }
 
-  async findByCPF(cpf: string) {
+  async buscaPorCPF(cpf: string) {
     const cliente = await this.clienteRepository.buscaPorCPF(cpf)
 
     if (cliente) {
