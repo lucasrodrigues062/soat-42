@@ -1,8 +1,7 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, HttpCode, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
 import { ClienteService } from './cliente.service';
 import CreateClienteDTO, { toCliente } from './dto/create-cliente';
-import { cp } from 'fs';
 
 
 @Controller('cliente')
