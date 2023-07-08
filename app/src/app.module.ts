@@ -5,7 +5,7 @@ import { ClienteModule } from './cliente/cliente.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProdutoModule } from './produto/produto.module';
 import { PedidoModule } from './pedido/pedido.module';
-import { QueueModule } from './queue/queue.module';
+import { FilaModule } from './fila/fila.module';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { QueueModule } from './queue/queue.module';
     ConfigModule.forRoot({ isGlobal: true }),
     ProdutoModule,
     PedidoModule,
-    QueueModule,
+    FilaModule,
   ],
 
   providers: [],

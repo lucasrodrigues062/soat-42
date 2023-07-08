@@ -1,6 +1,6 @@
 import { Prisma, Queue, QueuePayload } from "@prisma/client"
-import { CreateQueueDto } from "../dto/create-queue.dto"
-import { UpdateQueueDto } from "../dto/update-queue.dto";
+import { CreateFilaDto } from "../dto/create-fila.dto"
+import { UpdateFilaDto } from "../dto/update-fila.dto";
 
 
 type QueueWithOrder = Prisma.QueueGetPayload<{
@@ -9,10 +9,10 @@ type QueueWithOrder = Prisma.QueueGetPayload<{
     }
 }>
 
-export interface IQueueRepository {
-    criaFila(createQueueDto: CreateQueueDto): Promise<Queue>
+export interface IFilaRepository {
+    criaFila(createFilaDto: CreateFilaDto): Promise<Queue>
     buscaFila(filaId: number): Promise<QueueWithOrder>
     buscaFilas(): Promise<QueueWithOrder[]>
-    atualizaFila(filaId: number, updateQueueDto: UpdateQueueDto): Promise<Queue>
+    atualizaFila(filaId: number, updateFilaDto: UpdateFilaDto): Promise<Queue>
     removeFila(filaId:number): Promise<Queue>
 }

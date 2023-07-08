@@ -1,16 +1,16 @@
 import { PrismaService } from "src/prisma/prisma.service";
-import { IQueueRepository } from "./queue.interface";
+import { IFilaRepository } from "./fila.interface";
 
 
-export class QueueRepository implements IQueueRepository {
+export class FilaRepository implements IFilaRepository {
 
     constructor(private readonly db: PrismaService) { }
 
-    criaFila(createQueueDto) {
+    criaFila(createFilaDto) {
         return this.db.queue.create({
             data: {
-                status: createQueueDto.status,
-                orderId: createQueueDto.order_id,
+                status: createFilaDto.status,
+                orderId: createFilaDto.order_id,
             },
         });
     }

@@ -1,18 +1,18 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateQueueDto } from './dto/create-queue.dto';
-import { UpdateQueueDto } from './dto/update-queue.dto';
-import { IQueueRepository } from './repository/queue.interface';
+import { CreateFilaDto } from './dto/create-fila.dto';
+import { UpdateFilaDto } from './dto/update-fila.dto';
+import { IFilaRepository } from './repository/fila.interface';
 
 @Injectable()
-export class QueueService {
-  constructor(@Inject('IQueueRepository') private readonly queueRepository: IQueueRepository) { }
+export class FilaService {
+  constructor(@Inject('IFilaRepository') private readonly filaRepository: IFilaRepository) { }
 
-  create(createQueueDto: CreateQueueDto) {
-    return this.queueRepository.criaFila(createQueueDto)
+  create(createFilaDto: CreateFilaDto) {
+    return this.filaRepository.criaFila(createFilaDto)
   }
 
   async findAll() {
-    return (await this.queueRepository.buscaFilas()).map(
+    return (await this.filaRepository.buscaFilas()).map(
       (el) => {
         return {
           cliente_id: el.order.customerId,
@@ -26,7 +26,7 @@ export class QueueService {
   }
 
   async findOne(filaId: number) {
-    const queue = await this.queueRepository.buscaFila(filaId)
+    const queue = await this.filaRepository.buscaFila(filaId)
     if (queue == null) {
       throw new NotFoundException();
     }
@@ -39,9 +39,9 @@ export class QueueService {
     };
   }
 
-  async update(filaId: number, updateQueueDto: UpdateQueueDto) {
+  async update(filaId: number, updateFilaDto: UpdateFilaDto) {
     try {
-      const queue = await this.queueRepository.atualizaFila(filaId, updateQueueDto)
+      const queue = await this.filaRepository.atualizaFila(filaId, updateFilaDto)
 
       return {
         numero_pedido: queue.orderId,
@@ -53,6 +53,6 @@ export class QueueService {
   }
 
   async remove(filaId: number) {
-    return await this.queueRepository.removeFila(filaId)
+    return await this.filaRepository.removeFila(filaId)
   }
 }
