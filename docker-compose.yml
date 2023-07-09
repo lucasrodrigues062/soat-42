@@ -19,6 +19,9 @@ services:
   app:
     image: lucasrodrigues062/soat42
     container_name: soat42
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@localhost:5432/mydb?schema=public
+      - APP_PORT=3000
     ports:
       - "3000:3000"
     restart: unless-stopped 
