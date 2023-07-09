@@ -17,10 +17,12 @@ services:
       - postgres
     restart: unless-stopped
   app:
-    image: lucasrodrigues062/soat42
+    build:
+      context: .
+      dockerfile: dockerfile
     container_name: soat42
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@localhost:5432/mydb?schema=public
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/mydb?schema=public
       - APP_PORT=3000
     ports:
       - "3000:3000"
