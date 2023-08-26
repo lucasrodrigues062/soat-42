@@ -1,6 +1,6 @@
-import { PrismaService } from "src/prisma.service";
-import { IPedidoItemRepository } from "./pedidoItem.interface";
-import { Inject } from "@nestjs/common";
+import { PrismaService } from 'src/infra/database/prisma/prisma.service';
+import { IPedidoItemRepository } from './pedidoItem.interface';
+import { Inject } from '@nestjs/common';
 
 export class PedidoItemRepository implements IPedidoItemRepository {
     constructor(@Inject(PrismaService) private readonly db: PrismaService) { }
@@ -28,7 +28,8 @@ export class PedidoItemRepository implements IPedidoItemRepository {
             },
         });
     }
-    removeItemPedido(id) { // TODO: Remover relaçoes
+    removeItemPedido(id) {
+        // TODO: Remover relaçoes
         return this.db.orderItem.delete({ where: { id } });
     }
 }

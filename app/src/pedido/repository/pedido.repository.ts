@@ -1,6 +1,6 @@
-import { PrismaService } from "src/prisma.service";
-import { IPedidoRepository } from "./pedido.interface";
-import { Inject } from "@nestjs/common";
+import { PrismaService } from 'src/infra/database/prisma/prisma.service';
+import { IPedidoRepository } from './pedido.interface';
+import { Inject } from '@nestjs/common';
 
 export class PedidoRepository implements IPedidoRepository {
     constructor(@Inject(PrismaService) private readonly db: PrismaService) { }
@@ -21,7 +21,6 @@ export class PedidoRepository implements IPedidoRepository {
             where: { id: orderId },
             include: { items: true },
         });
-
     }
     atualizaPedido(pedidoId, items) {
         return this.db.order.update({
@@ -38,10 +37,9 @@ export class PedidoRepository implements IPedidoRepository {
             include: {
                 items: true,
             },
-        })
+        });
     }
     removePedido(id) {
         return this.db.order.delete({ where: { id: id } });
     }
-
 }

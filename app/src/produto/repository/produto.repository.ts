@@ -1,10 +1,9 @@
-import { PrismaService } from "src/prisma.service";
-import { IProdutoRepository } from "./produto.interface";
-import { Categoria } from "../dto/categoria-enum";
-import { Inject } from "@nestjs/common";
+import { IProdutoRepository } from './produto.interface';
+import { Categoria } from '../dto/categoria-enum';
+import { Inject } from '@nestjs/common';
+import { PrismaService } from 'src/infra/database/prisma/prisma.service';
 
 export class ProdutoRepository implements IProdutoRepository {
-
     constructor(@Inject(PrismaService) private readonly db: PrismaService) { }
 
     criaProduto(createProdutoDto) {
@@ -15,7 +14,7 @@ export class ProdutoRepository implements IProdutoRepository {
                 price: createProdutoDto.preco,
                 description: createProdutoDto.descricao,
             },
-        })
+        });
     }
 
     buscaProduto(code) {
@@ -39,12 +38,10 @@ export class ProdutoRepository implements IProdutoRepository {
                 price: updateProdutoDto.preco,
                 name: updateProdutoDto.nome,
                 description: updateProdutoDto.descricao,
-                category: updateProdutoDto.categoria
+                category: updateProdutoDto.categoria,
             },
         });
     }
 
-    removeProduto() {
-
-    }
+    removeProduto() { }
 }

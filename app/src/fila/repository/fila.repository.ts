@@ -1,10 +1,8 @@
-import { PrismaService } from "src/prisma.service";
-import { IFilaRepository } from "./fila.interface";
-import { Inject } from "@nestjs/common";
-
+import { PrismaService } from 'src/infra/database/prisma/prisma.service';
+import { IFilaRepository } from './fila.interface';
+import { Inject } from '@nestjs/common';
 
 export class FilaRepository implements IFilaRepository {
-
     constructor(@Inject(PrismaService) private readonly db: PrismaService) { }
 
     criaFila(createFilaDto) {
@@ -24,7 +22,7 @@ export class FilaRepository implements IFilaRepository {
         });
     }
     buscaFilas() {
-        return this.db.queue.findMany({ include: { order: true } })
+        return this.db.queue.findMany({ include: { order: true } });
     }
     atualizaFila(queueId, updateQueueDto) {
         return this.db.queue.update({
