@@ -8,7 +8,6 @@ import { HttpModule } from './infra/http/http.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-
     HttpModule,
     DatabaseModule,
   ],

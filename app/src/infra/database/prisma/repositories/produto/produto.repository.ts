@@ -43,5 +43,7 @@ export class ProdutoRepository implements IProdutoRepository {
         });
     }
 
-    removeProduto() { }
+    removeProduto(code) {
+        return this.db.product.delete({ where: { id: code } });
+    }
 }
