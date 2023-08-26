@@ -8,6 +8,8 @@ import { IPedidoRepository } from 'src/application/repositories/pedido.interface
 import { PedidoRepository } from './prisma/repositories/pedido/pedido.repository';
 import { IPedidoItemRepository } from 'src/application/repositories/pedidoItem.interface';
 import { PedidoItemRepository } from './prisma/repositories/pedido/pedidoItem.repository';
+import { IProdutoRepository } from 'src/application/repositories/produto.interface';
+import { ProdutoRepository } from './prisma/repositories/produto/produto.repository';
 
 @Module({
   providers: [
@@ -28,6 +30,10 @@ import { PedidoItemRepository } from './prisma/repositories/pedido/pedidoItem.re
       provide: IPedidoItemRepository,
       useClass: PedidoItemRepository,
     },
+    {
+      provide: IProdutoRepository,
+      useClass: ProdutoRepository,
+    },
   ],
   exports: [
     {
@@ -45,6 +51,10 @@ import { PedidoItemRepository } from './prisma/repositories/pedido/pedidoItem.re
     {
       provide: IPedidoItemRepository,
       useClass: PedidoItemRepository,
+    },
+    {
+      provide: IProdutoRepository,
+      useClass: ProdutoRepository,
     },
   ],
 })

@@ -1,7 +1,7 @@
-import { IProdutoRepository } from './produto.interface';
-import { Categoria } from '../dto/categoria-enum';
 import { Inject } from '@nestjs/common';
+import { IProdutoRepository } from 'src/application/repositories/produto.interface';
 import { PrismaService } from 'src/infra/database/prisma/prisma.service';
+import { Categoria } from 'src/infra/http/dtos/produto/categoria-enum';
 
 export class ProdutoRepository implements IProdutoRepository {
     constructor(@Inject(PrismaService) private readonly db: PrismaService) { }

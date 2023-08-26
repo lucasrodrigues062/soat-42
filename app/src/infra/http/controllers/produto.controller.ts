@@ -9,14 +9,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { Categoria } from './dto/categoria-enum';
-import { CreateProdutoDto } from './dto/create-produto.dto';
-import { UpdateProdutoDto } from './dto/update-produto.dto';
-import { ProdutoService } from './produto.service';
+import { Categoria } from '../dtos/produto/categoria-enum';
+import { ProdutoUseCase } from 'src/application/use-cases/produto-use-case';
+import { CreateProdutoDto } from '../dtos/produto/create-produto.dto';
+import { UpdateProdutoDto } from '../dtos/produto/update-produto.dto';
 
 @Controller('produtos')
 export class ProdutoController {
-  constructor(private readonly produtoService: ProdutoService) { }
+  constructor(private readonly produtoService: ProdutoUseCase) { }
 
   @Post()
   @HttpCode(201)
