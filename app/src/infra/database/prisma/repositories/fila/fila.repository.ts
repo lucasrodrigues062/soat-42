@@ -1,6 +1,7 @@
 import { PrismaService } from 'src/infra/database/prisma/prisma.service';
-import { IFilaRepository } from './fila.interface';
+import { IFilaRepository } from '../../../../../application/repositories/fila.interface';
 import { Inject } from '@nestjs/common';
+import { Queue } from '@prisma/client';
 
 export class FilaRepository implements IFilaRepository {
     constructor(@Inject(PrismaService) private readonly db: PrismaService) { }

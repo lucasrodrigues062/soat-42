@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { Customer, Prisma } from '@prisma/client';
 
-import { ReturnClienteDto } from 'src/infra/http/dtos/return-cliente.dto';
+import { ReturnClienteDto } from 'src/infra/http/dtos/cliente/return-cliente.dto';
 import { IClienteRepository } from '../repositories/cliente.interface';
 
 @Injectable()

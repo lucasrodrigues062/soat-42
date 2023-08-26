@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
-import { UpdateFilaDto } from './dto/update-fila.dto';
-import { FilaService } from './fila.service';
+import { UpdateFilaDto } from '../dtos/fila/update-fila.dto';
+import { FilaUseCase } from 'src/application/use-cases/fila-use-case';
 
 @Controller('filas')
 export class FilaController {
-  constructor(private readonly filaService: FilaService) { }
+  constructor(private readonly filaService: FilaUseCase) { }
 
   @Get()
   findAll() {

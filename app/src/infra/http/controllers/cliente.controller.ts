@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
 
-import CreateClienteDTO, { toCliente } from '../dtos/create-cliente.dto';
 import { CadastraClienteUseCase } from 'src/application/use-cases/cadastra-cliente-use-case';
 import { BuscaClienteUseCase } from 'src/application/use-cases/busca-cliente-use-case';
+import CreateClienteDTO, { toCliente } from '../dtos/cliente/create-cliente.dto';
 
 
 @Controller('clientes')

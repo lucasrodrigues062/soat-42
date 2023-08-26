@@ -10,20 +10,26 @@ import { CreatePedidoDto, StatusPedido } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { IPedidoRepository } from './repository/pedido.interface';
 import { IPedidoItemRepository } from './repository/pedidoItem.interface';
-import { FilaService } from 'src/fila/fila.service';
-import { StatusPedidoFila } from 'src/fila/dto/create-fila.dto';
+import { FilaUseCase } from 'src/application/use-cases/fila-use-case';
+import { StatusPedidoFila } from 'src/infra/http/dtos/fila/create-fila.dto';
 
 @Injectable()
 export class PedidoService {
   private readonly logger = new Logger(PedidoService.name);
-  constructor(@Inject('IPedidoRepository') private readonly pedidoRepository: IPedidoRepository,
-    @Inject('IPedidoItemRepository') private readonly pedidoItemRepository: IPedidoItemRepository,
-    private readonly filaService: FilaService
-    ) { }
+  constructor(
+    @Inject('IPedidoRepository')
+    private readonly pedidoRepository: IPedidoRepository,
+    @Inject('IPedidoItemRepository')
+    private readonly pedidoItemRepository: IPedidoItemRepository,
+    private readonly filaService: FilaUseCase,
+  ) { }
 
   async create(createPedidoDto: CreatePedidoDto) {
     try {
-      const pedido = await this.pedidoRepository.criaPedido(createPedidoDto, StatusPedido.PENDENTE)
+      const pedido = await this.pedidoRepository.criaPedido(
+        createPedidoDto,
+        StatusPedido.PENDENTE,
+      );
       const items = createPedidoDto.items.map((item) => {
         return {
           productId: item.id,
@@ -31,12 +37,15 @@ export class PedidoService {
         } as OrderItem;
       });
 
-      const finished = await this.pedidoRepository.atualizaPedido(pedido.id, items)
+      const finished = await this.pedidoRepository.atualizaPedido(
+        pedido.id,
+        items,
+      );
 
       await this.filaService.create({
         order_id: pedido.id,
-        status: StatusPedidoFila.RECEBIDO
-      })
+        status: StatusPedidoFila.RECEBIDO,
+      });
 
       return {
         client_id: finished.customerId,
@@ -60,7 +69,7 @@ export class PedidoService {
   }
 
   async findAll() {
-    const pedidos = await this.pedidoRepository.buscaPedidos()
+    const pedidos = await this.pedidoRepository.buscaPedidos();
 
     return pedidos.map((el) => {
       return {
@@ -79,7 +88,7 @@ export class PedidoService {
   }
 
   async findOne(pedidoId: number) {
-    const pedido = await this.pedidoRepository.buscaPedido(pedidoId)
+    const pedido = await this.pedidoRepository.buscaPedido(pedidoId);
 
     if (pedido === null || pedido === undefined) {
       throw new NotFoundException();
@@ -101,16 +110,26 @@ export class PedidoService {
 
   async update(pedidoId: number, updatePedidoDto: UpdatePedidoDto) {
     for await (const item of updatePedidoDto.items) {
-      const existItem = await this.pedidoItemRepository.buscaItemPedido(pedidoId, item.id)
+      const existItem = await this.pedidoItemRepository.buscaItemPedido(
+        pedidoId,
+        item.id,
+      );
 
       if (existItem != null) {
         if (item.quantidade <= 0) {
-          await this.pedidoItemRepository.removeItemPedido(pedidoId)
+          await this.pedidoItemRepository.removeItemPedido(pedidoId);
         } else {
-          await this.pedidoItemRepository.atualizaItemPedido(pedidoId, item.quantidade)
+          await this.pedidoItemRepository.atualizaItemPedido(
+            pedidoId,
+            item.quantidade,
+          );
         }
       } else {
-        await this.pedidoItemRepository.criaItemPedido(pedidoId, item.id, item.quantidade)
+        await this.pedidoItemRepository.criaItemPedido(
+          pedidoId,
+          item.id,
+          item.quantidade,
+        );
       }
     }
 
@@ -118,6 +137,6 @@ export class PedidoService {
   }
 
   remove(pedidoId: number) {
-    return this.pedidoRepository.removePedido(pedidoId)
+    return this.pedidoRepository.removePedido(pedidoId);
   }
 }
