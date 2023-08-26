@@ -5,10 +5,17 @@ import { CadastraClienteUseCase } from 'src/application/use-cases/cadastra-clien
 import { BuscaClienteUseCase } from 'src/application/use-cases/busca-cliente-use-case';
 import { FilaController } from './controllers/fila.controller';
 import { FilaUseCase } from 'src/application/use-cases/fila-use-case';
+import { PedidoController } from './controllers/pedido.controller';
+import { PedidoUseCase } from 'src/application/use-cases/pedido-use-case';
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [ClienteController, FilaController],
-  providers: [CadastraClienteUseCase, BuscaClienteUseCase, FilaUseCase],
+  controllers: [ClienteController, FilaController, PedidoController],
+  providers: [
+    CadastraClienteUseCase,
+    BuscaClienteUseCase,
+    FilaUseCase,
+    PedidoUseCase,
+  ],
 })
 export class HttpModule { }

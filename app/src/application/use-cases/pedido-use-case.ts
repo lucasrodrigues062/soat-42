@@ -1,25 +1,25 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { OrderItem, Prisma } from '@prisma/client';
-import { CreatePedidoDto, StatusPedido } from './dto/create-pedido.dto';
-import { UpdatePedidoDto } from './dto/update-pedido.dto';
-import { IPedidoRepository } from './repository/pedido.interface';
-import { IPedidoItemRepository } from './repository/pedidoItem.interface';
 import { FilaUseCase } from 'src/application/use-cases/fila-use-case';
 import { StatusPedidoFila } from 'src/infra/http/dtos/fila/create-fila.dto';
+import {
+  CreatePedidoDto,
+  StatusPedido,
+} from '../../infra/http/dtos/pedido/create-pedido.dto';
+import { UpdatePedidoDto } from '../../infra/http/dtos/pedido/update-pedido.dto';
+import { IPedidoRepository } from '../repositories/pedido.interface';
+import { IPedidoItemRepository } from '../repositories/pedidoItem.interface';
 
 @Injectable()
-export class PedidoService {
-  private readonly logger = new Logger(PedidoService.name);
+export class PedidoUseCase {
+  private readonly logger = new Logger(PedidoUseCase.name);
   constructor(
-    @Inject('IPedidoRepository')
     private readonly pedidoRepository: IPedidoRepository,
-    @Inject('IPedidoItemRepository')
     private readonly pedidoItemRepository: IPedidoItemRepository,
     private readonly filaService: FilaUseCase,
   ) { }

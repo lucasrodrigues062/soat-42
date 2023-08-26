@@ -7,13 +7,13 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { PedidoService } from './pedido.service';
-import { CreatePedidoDto } from './dto/create-pedido.dto';
-import { UpdatePedidoDto } from './dto/update-pedido.dto';
+import { CreatePedidoDto } from '../dtos/pedido/create-pedido.dto';
+import { UpdatePedidoDto } from '../dtos/pedido/update-pedido.dto';
+import { PedidoUseCase } from 'src/application/use-cases/pedido-use-case';
 
 @Controller('pedidos')
 export class PedidoController {
-  constructor(private readonly pedidoService: PedidoService) { }
+  constructor(private readonly pedidoService: PedidoUseCase) { }
 
   @Post()
   create(@Body() createPedidoDto: CreatePedidoDto) {

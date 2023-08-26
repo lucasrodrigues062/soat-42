@@ -1,6 +1,7 @@
 import { PrismaService } from 'src/infra/database/prisma/prisma.service';
-import { IPedidoItemRepository } from './pedidoItem.interface';
+
 import { Inject } from '@nestjs/common';
+import { IPedidoItemRepository } from 'src/application/repositories/pedidoItem.interface';
 
 export class PedidoItemRepository implements IPedidoItemRepository {
     constructor(@Inject(PrismaService) private readonly db: PrismaService) { }

@@ -4,6 +4,10 @@ import { ClienteRepository } from './prisma/repositories/cliente/cliente.reposit
 import { IClienteRepository } from 'src/application/repositories/cliente.interface';
 import { IFilaRepository } from 'src/application/repositories/fila.interface';
 import { FilaRepository } from './prisma/repositories/fila/fila.repository';
+import { IPedidoRepository } from 'src/application/repositories/pedido.interface';
+import { PedidoRepository } from './prisma/repositories/pedido/pedido.repository';
+import { IPedidoItemRepository } from 'src/application/repositories/pedidoItem.interface';
+import { PedidoItemRepository } from './prisma/repositories/pedido/pedidoItem.repository';
 
 @Module({
   providers: [
@@ -16,6 +20,14 @@ import { FilaRepository } from './prisma/repositories/fila/fila.repository';
       provide: IFilaRepository,
       useClass: FilaRepository,
     },
+    {
+      provide: IPedidoRepository,
+      useClass: PedidoRepository,
+    },
+    {
+      provide: IPedidoItemRepository,
+      useClass: PedidoItemRepository,
+    },
   ],
   exports: [
     {
@@ -25,6 +37,14 @@ import { FilaRepository } from './prisma/repositories/fila/fila.repository';
     {
       provide: IFilaRepository,
       useClass: FilaRepository,
+    },
+    {
+      provide: IPedidoRepository,
+      useClass: PedidoRepository,
+    },
+    {
+      provide: IPedidoItemRepository,
+      useClass: PedidoItemRepository,
     },
   ],
 })
